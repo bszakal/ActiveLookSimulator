@@ -30,11 +30,14 @@ struct LogView: View {
     }
     
     private var commandLogs: some View {
-        VStack {
-            ForEach(viewModel.logs) { log in
-                Text(log.title)
+        ScrollView {
+            VStack {
+                ForEach(viewModel.logs) { log in
+                    Text(log.title)
+                }
             }
         }
+        .background(Color.black)
     }
 }
 
@@ -42,11 +45,9 @@ struct LogView: View {
     
     let activeLookGlassesSimulatorImpl = ActiveLookGlassesSimulatorImpl(bluetoothService: BluetoothServiceImpl(peripheralManager: DrawingView.PreviewPeripheralManager()))
     
-    let manager = PreviewSimulatorManager()
+    let manager = SimulatorManagerImpl(dataInterpreter: DataInterpreterImpl(), activeLookSimulator: activeLookGlassesSimulatorImpl)
     
     let logViewModel = LogViewModel(manager: manager, converter: DrawingCommandConverter())
-    
-    let _ = manager.decodedCommand_.send(DecodedCommand(commandId: .circ, values: [30,50,10], queryId: 2))
     
     LogView(viewModel: logViewModel)
 }

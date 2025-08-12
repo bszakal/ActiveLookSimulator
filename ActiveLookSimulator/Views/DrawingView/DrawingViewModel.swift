@@ -17,11 +17,12 @@ class DrawingViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Published var drawingCommands: [DrawingCommand] = []
-    private(set) var color = Constants.yellowGreyLevels[8]
+    private(set) var color = Color(hex: Constants.yellowGreyLevels[8] ?? "#000000") ?? Color.black
     
     init(manager: SimulatorManager, converter: DrawingCommandConverter) {
         self.manager = manager
         self.converter = converter
+        subscriptions()
     }
     
     private func subscriptions() {

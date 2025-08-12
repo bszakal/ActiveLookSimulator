@@ -18,7 +18,7 @@ struct DrawingCommandConverter {
             let x = command.values[0]
             let y = command.values[1]
             let radius = command.values[2]
-            return .circle(center: .init(x: CGFloat(x), y: CGFloat(y)), radius: CGFloat(radius))
+            return DrawingCommand(commandType: .circle(center: .init(x: CGFloat(x), y: CGFloat(y)), radius: CGFloat(radius)))
             
         case .rect:
             guard command.values.count == 4 else {
@@ -28,8 +28,8 @@ struct DrawingCommandConverter {
             let y0 = command.values[1]
             let x1 = command.values[2]
             let y1 = command.values[3]
-            return .rectangle(topLeft: .init(x: CGFloat(x0), y: CGFloat(y0)),
-                              bottomRight: .init(x: CGFloat(x1), y: CGFloat(y1)))
+            return DrawingCommand(commandType: .rectangle(topLeft: .init(x: CGFloat(x0), y: CGFloat(y0)),
+                                                          bottomRight: .init(x: CGFloat(x1), y: CGFloat(y1))))
             
         default:
             return nil

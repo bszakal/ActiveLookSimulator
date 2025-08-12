@@ -13,7 +13,13 @@ struct DecodedCommand {
     let queryId: UInt8?
 }
 
-enum DrawingCommand {
-    case circle(center: CGPoint, radius: CGFloat)
-    case rectangle(topLeft: CGPoint, bottomRight: CGPoint)
+struct DrawingCommand {
+    let id = UUID()
+    let commandType: CommandType
+    
+    enum CommandType {
+        case circle(center: CGPoint, radius: CGFloat)
+        case rectangle(topLeft: CGPoint, bottomRight: CGPoint)
+    }
+    
 }

@@ -57,15 +57,6 @@
 		61FA69522E49ED9B0021224D /* Exceptions for "ActiveLookSimulator" folder in "ActiveLookSimulatorMacOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				DrawingView/CommandLog.swift,
-				DrawingView/ContainerView.swift,
-				DrawingView/ContainerViewModel.swift,
-				DrawingView/DrawingCommandConverter.swift,
-				DrawingView/DrawingView.swift,
-				DrawingView/DrawingViewModel.swift,
-				DrawingView/LogView.swift,
-				DrawingView/LogViewModel.swift,
-				DrawingView/PreviewSimulatorManager.swift,
 				Manager/Dependencies/BluetoothService/BluetoothService.swift,
 				Manager/Dependencies/BluetoothService/BluetoothServiceProtocols.swift,
 				Manager/Dependencies/DataInterpreter.swift,
@@ -73,8 +64,18 @@
 				Manager/Dependencies/Simulator/SimulatorProtocols.swift,
 				Manager/SimulatorManager.swift,
 				Models/CommandId.swift,
+				Models/CommandLog.swift,
 				Models/Constants.swift,
 				Models/DecodedCommand.swift,
+				"Utilities/Color+extension.swift",
+				Utilities/DrawingCommandConverter.swift,
+				Utilities/PreviewSimulatorManager.swift,
+				Views/ContainerView/ContainerView.swift,
+				Views/ContainerView/ContainerViewModel.swift,
+				Views/DrawingView/DrawingView.swift,
+				Views/DrawingView/DrawingViewModel.swift,
+				Views/LogView/LogView.swift,
+				Views/LogView/LogViewModel.swift,
 			);
 			target = 61FA69202E49ECF10021224D /* ActiveLookSimulatorMacOS */;
 		};
