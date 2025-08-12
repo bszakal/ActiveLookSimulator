@@ -22,6 +22,8 @@ class DrawingViewModel: ObservableObject {
     
     private(set) var color = Color(hex: Constants.yellowGreyLevels[8] ?? "#000000") ?? Color.black
     
+    @Published var isBluetoothActive = false
+    
     init(manager: SimulatorManager, converter: DrawingCommandConverter, contextDrawer: ContextDrawer) {
         self.manager = manager
         self.converter = converter
@@ -33,6 +35,12 @@ class DrawingViewModel: ObservableObject {
         self.manager.decodedCommand
             .sink {[weak self] command in
                 self?.handleCommand(command)
+            }
+            .store(in: &self.cancellables)
+        
+        self.manager.isBluetoothActive
+            .sink { [weak self] isActive in
+                self?.isBluetoothActive = isActive
             }
             .store(in: &self.cancellables)
     }
@@ -54,6 +62,10 @@ class DrawingViewModel: ObservableObject {
         default:
             drawingCommands.append(drawingCommand)
         }
+    }
+    
+    func clearDrawings() {
+        drawingCommands.removeAll()
     }
 }
 

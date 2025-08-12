@@ -12,6 +12,7 @@ import Combine
 
 protocol SimulatorManager {
     var decodedCommand: AnyPublisher<DecodedCommand, Never> { get }
+    var isBluetoothActive: AnyPublisher<Bool, Never> { get }
 }
 
 class SimulatorManagerImpl: SimulatorManager {
@@ -24,6 +25,11 @@ class SimulatorManagerImpl: SimulatorManager {
     private var decodedCommand_ = PassthroughSubject<DecodedCommand, Never>()
     public var decodedCommand: AnyPublisher<DecodedCommand, Never> {
         decodedCommand_.eraseToAnyPublisher()
+    }
+    
+    private var isBluetoothActive_ = CurrentValueSubject<Bool, Never>(false)
+    public var isBluetoothActive: AnyPublisher<Bool, Never> {
+        isBluetoothActive_.eraseToAnyPublisher()
     }
     
     init(dataInterpreter: DataInterpreter, activeLookSimulator: ActiveLookGlassesSimulator) {
@@ -40,6 +46,9 @@ class SimulatorManagerImpl: SimulatorManager {
             .sink { [weak self] state in
                 if state == .poweredOn {
                     self?.handleBluetoothIsConnected()
+                    self?.isBluetoothActive_.send(true)
+                } else {
+                    self?.isBluetoothActive_.send(false)
                 }
             }
             .store(in: &cancellables)
