@@ -26,4 +26,17 @@ struct Constants {
         14: "#F0F000",
         15: "#FFFF00"
     ]
+    
+    static func fontSize(for level: Int) -> CGFloat {
+        switch level {
+        case 0, 1:
+            return 24
+        case 2:
+            return 35
+        case 3:
+            return 49
+        default:
+            return 24
+        }
+    }
 }

@@ -13,15 +13,17 @@ class DrawingViewModel: ObservableObject {
     
     let manager: SimulatorManager
     private let converter: DrawingCommandConverter
+    private let contextDrawer: ContextDrawer
     
     private var cancellables = Set<AnyCancellable>()
     
     @Published var drawingCommands: [DrawingCommand] = []
     private(set) var color = Color(hex: Constants.yellowGreyLevels[8] ?? "#000000") ?? Color.black
     
-    init(manager: SimulatorManager, converter: DrawingCommandConverter) {
+    init(manager: SimulatorManager, converter: DrawingCommandConverter, contextDrawer: ContextDrawer) {
         self.manager = manager
         self.converter = converter
+        self.contextDrawer = contextDrawer
         subscriptions()
     }
     
@@ -38,5 +40,12 @@ class DrawingViewModel: ObservableObject {
             return
         }
         drawingCommands.append(drawingCommand)
+    }
+
+}
+
+extension DrawingViewModel {
+    public func contextDrawer(_ context: inout GraphicsContext, commandType: DrawingCommand.CommandType) {
+        self.contextDrawer.drawOnContext(&context, commandType: commandType, color: self.color)
     }
 }

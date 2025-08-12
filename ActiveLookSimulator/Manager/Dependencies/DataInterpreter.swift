@@ -13,6 +13,18 @@ protocol DataInterpreter {
 
 struct DataInterpreterImpl: DataInterpreter {
     
+    private func extractTextFromBytes(commandId: CommandId, rawBytes: [UInt8]) -> String? {
+        switch commandId {
+        case .txt:
+            // Extract string from bytes 7 onwards (after x, y, r, f, c)
+            guard rawBytes.count > 7 else { return nil }
+            let textBytes = Array(rawBytes[7...])
+            return String(bytes: textBytes, encoding: .utf8)
+        default:
+            return nil
+        }
+    }
+    
     private func parseCommandParameters(commandId: CommandId, rawBytes: [UInt8]) -> [Int] {
         switch commandId {
         case .circ, .circf:
@@ -38,6 +50,16 @@ struct DataInterpreterImpl: DataInterpreter {
             let x1 = Int(rawBytes[4]) << 8 | Int(rawBytes[5])
             let y1 = Int(rawBytes[6]) << 8 | Int(rawBytes[7])
             return [x0, y0, x1, y1]
+            
+        case .txt:
+            // s16 x, s16 y, u8 r, u8 f, u8 c, str string (min 6 bytes -> 5 values + string)
+            guard rawBytes.count >= 6 else { return rawBytes.map { Int($0) } }
+            let x = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            let r = Int(rawBytes[4])  // rotation
+            let f = Int(rawBytes[5])  // font size
+            let c = Int(rawBytes[6])  // color
+            return [x, y, r, f, c]
             
         default:
             // For other commands, just return raw bytes as Int values
@@ -103,7 +125,8 @@ struct DataInterpreterImpl: DataInterpreter {
         // Parse raw bytes into proper parameter values based on command type
         let commandIdEnum = CommandId(rawValue: commandId) ?? .unknown
         let payload = parseCommandParameters(commandId: commandIdEnum, rawBytes: rawPayload)
+        let textValue = extractTextFromBytes(commandId: commandIdEnum, rawBytes: rawPayload)
         
-        return DecodedCommand(commandId: commandIdEnum, values: payload, queryId: queryId)
+        return DecodedCommand(commandId: commandIdEnum, values: payload, textValue: textValue, queryId: queryId)
     }
 }

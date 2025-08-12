@@ -20,7 +20,7 @@ class ContainerViewModel: ObservableObject {
         
         let manager = SimulatorManagerImpl(dataInterpreter: DataInterpreterImpl(),
                                            activeLookSimulator: activeLookGlassesSimulatorImpl)
-        let drawingViewModel = DrawingViewModel(manager: manager, converter: commandConverter)
+        let drawingViewModel = DrawingViewModel(manager: manager, converter: commandConverter, contextDrawer: ContextDrawerImpl())
         let logViewModel = LogViewModel(manager: manager, converter: commandConverter)
         
         self.manager = manager

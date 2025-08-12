@@ -31,6 +31,23 @@ struct DrawingCommandConverter {
             return DrawingCommand(commandType: .rectangle(topLeft: .init(x: CGFloat(x0), y: CGFloat(y0)),
                                                           bottomRight: .init(x: CGFloat(x1), y: CGFloat(y1))))
             
+        case .txt:
+            guard command.values.count == 5, let text = command.textValue else {
+                return nil
+            }
+            let x = command.values[0]
+            let y = command.values[1]
+            let rotation = command.values[2]
+            let fontSize = command.values[3]
+            let color = command.values[4]
+            return DrawingCommand(commandType: .text(
+                position: .init(x: CGFloat(x), y: CGFloat(y)),
+                text: text,
+                rotation: rotation,
+                fontSize: fontSize,
+                color: color
+            ))
+            
         default:
             return nil
         }
@@ -55,6 +72,5 @@ struct DrawingCommandConverter {
         default:
             return CommandLog(title: "Unknown", parameters: [], commandId: .unknown)
         }
-    
     }
 }
