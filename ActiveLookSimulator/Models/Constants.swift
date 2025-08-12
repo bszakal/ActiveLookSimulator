@@ -9,7 +9,7 @@ import Foundation
 
 struct Constants {
     static let yellowGreyLevels: [Int: String] = [
-        0: "#101000",
+        0: "#000000",
         1: "#202000",
         2: "#303000",
         3: "#404000",

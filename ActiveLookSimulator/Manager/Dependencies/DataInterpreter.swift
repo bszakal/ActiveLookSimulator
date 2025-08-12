@@ -61,6 +61,40 @@ struct DataInterpreterImpl: DataInterpreter {
             let c = Int(rawBytes[6])  // color
             return [x, y, r, f, c]
             
+        case .grey:
+            // u8 lvl (1 byte -> 1 value)
+            guard rawBytes.count == 1 else { return rawBytes.map { Int($0) } }
+            return [Int(rawBytes[0])]
+            
+        case .shift:
+            // s16 x, s16 y (4 bytes -> 2 values)
+            guard rawBytes.count == 4 else { return rawBytes.map { Int($0) } }
+            let x = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            return [x, y]
+            
+        case .color:
+            // u8 color (1 byte -> 1 value)
+            guard rawBytes.count == 1 else { return rawBytes.map { Int($0) } }
+            return [Int(rawBytes[0])]
+            
+        case .circf:
+            // s16 x, s16 y, u8 r (5 bytes -> 3 values) - same as .circ
+            guard rawBytes.count == 5 else { return rawBytes.map { Int($0) } }
+            let x = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            let r = Int(rawBytes[4])
+            return [x, y, r]
+            
+        case .rectf:
+            // s16 x0, s16 y0, s16 x1, s16 y1 (8 bytes -> 4 values) - same as .rect
+            guard rawBytes.count == 8 else { return rawBytes.map { Int($0) } }
+            let x0 = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y0 = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            let x1 = Int(rawBytes[4]) << 8 | Int(rawBytes[5])
+            let y1 = Int(rawBytes[6]) << 8 | Int(rawBytes[7])
+            return [x0, y0, x1, y1]
+            
         default:
             // For other commands, just return raw bytes as Int values
             return rawBytes.map { Int($0) }

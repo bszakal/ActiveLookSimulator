@@ -18,6 +18,8 @@ class DrawingViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Published var drawingCommands: [DrawingCommand] = []
+    private var shift: CGSize = CGSize(width: 0, height: 0)
+    
     private(set) var color = Color(hex: Constants.yellowGreyLevels[8] ?? "#000000") ?? Color.black
     
     init(manager: SimulatorManager, converter: DrawingCommandConverter, contextDrawer: ContextDrawer) {
@@ -36,16 +38,34 @@ class DrawingViewModel: ObservableObject {
     }
     
     private func handleCommand(_ command: DecodedCommand) {
-        guard let drawingCommand = self.converter.convertCommandToDrawingCommand(command) else {
+        guard var drawingCommand = self.converter.convertCommandToDrawingCommand(command) else {
             return
         }
-        drawingCommands.append(drawingCommand)
+        drawingCommand.color = self.color
+        drawingCommand.shift = self.shift
+        
+        switch drawingCommand.commandType{
+        case .setColor(let color):
+            self.color = Color(hex: Constants.yellowGreyLevels[color] ?? "#000000") ?? Color.black
+        case .setGreyLevel(let level):
+            self.color = Color(hex: Constants.yellowGreyLevels[level] ?? "#000000") ?? Color.black
+        case .setShift(offset: let offset):
+            self.shift = offset
+        default:
+            drawingCommands.append(drawingCommand)
+        }
     }
 
 }
 
 extension DrawingViewModel {
-    public func contextDrawer(_ context: inout GraphicsContext, commandType: DrawingCommand.CommandType) {
-        self.contextDrawer.drawOnContext(&context, commandType: commandType, color: self.color)
+    public func contextDrawer(_ context: inout GraphicsContext, command: DrawingCommand) {
+        
+        switch command.commandType{
+        case .setColor, .setShift, .setGreyLevel:
+            return
+        default:
+            self.contextDrawer.drawOnContext(&context, commandType: command.commandType, color: command.color ?? .black, shift: command.shift ?? .zero)
+        }
     }
 }

@@ -36,16 +36,16 @@ struct DrawingView: View {
     
     private var drawingView: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.black)
-            
-            
-                 ForEach(viewModel.drawingCommands) { command in
-                    Canvas { context, size in
-                        viewModel.contextDrawer(&context, commandType: command.commandType)
+            Canvas { context, size in
+                for command in viewModel.drawingCommands {
+                    viewModel.contextDrawer(&context, command: command)
                 }
             }
-            .frame(width: 304, height: 256)
+        }
+        .frame(width: 304, height: 256)
+        .background {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color.black)
         }
     }
 }

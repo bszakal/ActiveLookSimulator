@@ -72,7 +72,6 @@
 				"Utilities/Color+extension.swift",
 				Utilities/ContextDrawer.swift,
 				Utilities/DrawingCommandConverter.swift,
-				Utilities/PreviewSimulatorManager.swift,
 				Views/ContainerView/ContainerView.swift,
 				Views/ContainerView/ContainerViewModel.swift,
 				Views/DrawingView/DrawingView.swift,
