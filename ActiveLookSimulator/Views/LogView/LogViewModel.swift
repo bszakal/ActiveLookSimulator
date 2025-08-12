@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class LogViewModel: ObservableObject {
     
@@ -35,10 +36,18 @@ class LogViewModel: ObservableObject {
     private func handleCommand(_ command: DecodedCommand) {
         let log = self.converter.convertCommandToLog(command)
         
-        if self.logs.isEmpty {
-            self.logs.append(log)
-        } else {
-            self.logs.insert(log, at: 0)
+        withAnimation {
+            if self.logs.isEmpty {
+                self.logs.append(log)
+            } else {
+                self.logs.insert(log, at: 0)
+            }
+        }
+    }
+    
+    func clearLogs() {
+        withAnimation {
+            logs.removeAll()
         }
     }
 }

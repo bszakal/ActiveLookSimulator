@@ -55,7 +55,6 @@ class DrawingViewModel: ObservableObject {
             drawingCommands.append(drawingCommand)
         }
     }
-
 }
 
 extension DrawingViewModel {
