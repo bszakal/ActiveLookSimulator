@@ -69,8 +69,10 @@ struct DataInterpreterImpl: DataInterpreter {
         case .shift:
             // s16 x, s16 y (4 bytes -> 2 values)
             guard rawBytes.count == 4 else { return rawBytes.map { Int($0) } }
-            let x = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
-            let y = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            let xUnsigned = UInt16(rawBytes[0]) << 8 | UInt16(rawBytes[1])
+            let yUnsigned = UInt16(rawBytes[2]) << 8 | UInt16(rawBytes[3])
+            let x = Int(Int16(bitPattern: xUnsigned))
+            let y = Int(Int16(bitPattern: yUnsigned))
             return [x, y]
             
         case .color:

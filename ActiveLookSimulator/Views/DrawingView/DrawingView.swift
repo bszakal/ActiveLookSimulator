@@ -36,8 +36,8 @@ struct DrawingView: View {
     
     private var drawingView: some View {
         ZStack {
-            Canvas { context, size in
-                for command in viewModel.drawingCommands {
+            ForEach(viewModel.drawingCommands) { command in
+                Canvas { context, size in
                     viewModel.contextDrawer(&context, command: command)
                 }
             }
