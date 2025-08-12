@@ -51,3 +51,11 @@ class BluetoothServiceImpl: NSObject, BluetoothService {
         self.peripheralManager.updateValue(data, for: characteristic, onSubscribedCentrals: onSubscribedCentrals)
     }
 }
+
+extension DrawingView {
+    class PreviewPeripheralManager: CBPeripheralManager {
+        convenience init() {
+            self.init(delegate: nil, queue: nil)
+        }
+    }
+}

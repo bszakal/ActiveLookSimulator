@@ -61,7 +61,10 @@ extension SimulatorManagerImpl: ActiveLookGlassesSimulatorDelegate {
         }
         
         switch decodedCommand.commandId {
-        case .clear, .grey, .shift, .color, .point, .line, .rect, .rectf, .circ, .circf, .txt, .layoutDisplay, .layoutClear:
+        case  .grey, .shift, .color, .point, .line, .rect, .rectf, .circ, .circf, .txt, .layoutDisplay, .layoutClear:
+            self.decodedCommand_.send(decodedCommand)
+            return .success
+        case .clear:
             return .success
         default:
             return .unlikelyError

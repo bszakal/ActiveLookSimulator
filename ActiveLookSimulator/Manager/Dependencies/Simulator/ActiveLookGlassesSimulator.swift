@@ -79,11 +79,10 @@ extension ActiveLookGlassesSimulatorImpl {
     ]
     
     struct Services {
-        //Services
+        
         let activeLookService: CBMutableService
         let batteryService: CBMutableService
         
-        // Characteristics
         let txCharacteristic: CBMutableCharacteristic
         let rxCharacteristic: CBMutableCharacteristic
         let flowControlCharacteristic: CBMutableCharacteristic

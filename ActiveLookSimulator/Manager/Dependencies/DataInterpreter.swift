@@ -12,6 +12,38 @@ protocol DataInterpreter {
 }
 
 struct DataInterpreterImpl: DataInterpreter {
+    
+    private func parseCommandParameters(commandId: CommandId, rawBytes: [UInt8]) -> [Int] {
+        switch commandId {
+        case .circ, .circf:
+            // s16 x, s16 y, u8 r (5 bytes -> 3 values)
+            guard rawBytes.count == 5 else { return rawBytes.map { Int($0) } }
+            let x = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            let r = Int(rawBytes[4])
+            return [x, y, r]
+            
+        case .point:
+            // s16 x, s16 y (4 bytes -> 2 values)
+            guard rawBytes.count == 4 else { return rawBytes.map { Int($0) } }
+            let x = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            return [x, y]
+            
+        case .rect, .rectf, .line:
+            // s16 x0, s16 y0, s16 x1, s16 y1 (8 bytes -> 4 values)
+            guard rawBytes.count == 8 else { return rawBytes.map { Int($0) } }
+            let x0 = Int(rawBytes[0]) << 8 | Int(rawBytes[1])
+            let y0 = Int(rawBytes[2]) << 8 | Int(rawBytes[3])
+            let x1 = Int(rawBytes[4]) << 8 | Int(rawBytes[5])
+            let y1 = Int(rawBytes[6]) << 8 | Int(rawBytes[7])
+            return [x0, y0, x1, y1]
+            
+        default:
+            // For other commands, just return raw bytes as Int values
+            return rawBytes.map { Int($0) }
+        }
+    }
 
     public func decodeCommand(from data: Data) -> DecodedCommand? {
         // Need at least: header + cmdId + cmdFormat + length(1 or 2 bytes) + footer
@@ -60,9 +92,18 @@ struct DataInterpreterImpl: DataInterpreter {
         let footerIndex = length - 1
         guard data[footerIndex] == 0xAA else { return nil }
         
-        // Extract payload values (from after queryId up to before footer)
-        let payload = Array(data[offset..<footerIndex])
+        // Extract payload values (actual command parameters only)
+        let lengthBytes = isTwoByteLength ? 2 : 1
+        let queryIdBytes = hasQueryId ? 1 : 0
+        let fixedBytes = 1 + 1 + 1 + lengthBytes + queryIdBytes + 1 // header + cmdId + cmdFormat + length + queryId + footer
+        let expectedDataSize = length - fixedBytes
+        let parameterEndIndex = offset + expectedDataSize
+        let rawPayload = Array(data[offset..<parameterEndIndex])
         
-        return DecodedCommand(commandId: CommandId(rawValue: commandId) ?? .unknown, values: payload, queryId: queryId)
+        // Parse raw bytes into proper parameter values based on command type
+        let commandIdEnum = CommandId(rawValue: commandId) ?? .unknown
+        let payload = parseCommandParameters(commandId: commandIdEnum, rawBytes: rawPayload)
+        
+        return DecodedCommand(commandId: commandIdEnum, values: payload, queryId: queryId)
     }
 }

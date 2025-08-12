@@ -1,27 +1,27 @@
 //
-//  DrawingViewModel.swift
+//  LogViewModel.swift
 //  ActiveLookSimulator
 //
-//  Created by Benjamin Szakal on 10/08/2025.
+//  Created by Benjamin Szakal on 12/08/2025.
 //
 
 import Foundation
-import SwiftUI
 import Combine
 
-class DrawingViewModel: ObservableObject {
+class LogViewModel: ObservableObject {
     
     let manager: SimulatorManager
-    private let converter: DrawingCommandConverter
+    let converter: DrawingCommandConverter
     
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var drawingCommands: [DrawingCommand] = []
-    private(set) var color = Constants.yellowGreyLevels[8]
+    @Published var logs: [CommandLog] = []
     
     init(manager: SimulatorManager, converter: DrawingCommandConverter) {
         self.manager = manager
         self.converter = converter
+        
+        subscriptions()
     }
     
     private func subscriptions() {
@@ -29,13 +29,16 @@ class DrawingViewModel: ObservableObject {
             .sink {[weak self] command in
                 self?.handleCommand(command)
             }
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
     }
     
     private func handleCommand(_ command: DecodedCommand) {
-        guard let drawingCommand = self.converter.convertCommandToDrawingCommand(command) else {
-            return
+        let log = self.converter.convertCommandToLog(command)
+        
+        if self.logs.isEmpty {
+            self.logs.append(log)
+        } else {
+            self.logs.insert(log, at: 0)
         }
-        drawingCommands.append(drawingCommand)
     }
 }

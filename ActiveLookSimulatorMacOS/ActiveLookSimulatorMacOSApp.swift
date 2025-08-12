@@ -9,13 +9,11 @@ import SwiftUI
 import CoreBluetooth
 
 @main
-struct ActiveLookSimulatorMacOSApp: App {
-    
-    let manager = SimulatorManagerImpl(dataInterpreter: DataInterpreterImpl(), activeLookSimulator: ActiveLookGlassesSimulatorImpl(bluetoothService: BluetoothServiceImpl(peripheralManager: CBPeripheralManager())))
+struct ActiveLookSimulatorApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContainerView()
         }
     }
 }
