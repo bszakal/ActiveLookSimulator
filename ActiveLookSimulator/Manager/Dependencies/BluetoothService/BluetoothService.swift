@@ -14,6 +14,8 @@ class BluetoothServiceImpl: NSObject, BluetoothService {
     private var peripheralManager: CBPeripheralManagerProtocol
     weak var delegate: BluetoothServiceDelegate?
     
+    private var addedServices: [CBService] = []
+    
     init(peripheralManager: CBPeripheralManagerProtocol) {
         self.peripheralManager = peripheralManager
         super.init()
@@ -44,7 +46,14 @@ class BluetoothServiceImpl: NSObject, BluetoothService {
     }
     
     func add(_ service: CBMutableService) {
-        self.peripheralManager.add(service)
+        let existingServices = self.addedServices
+        if existingServices.contains(where: { $0.uuid == service.uuid }) {
+            return
+        } else {
+            self.peripheralManager.add(service)
+            self.addedServices.append(service)
+        }
+        
     }
     
     func updateValue(_ data: Data, for characteristic: CBMutableCharacteristic, onSubscribedCentrals: [CBCentral]?) {
