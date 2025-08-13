@@ -17,7 +17,7 @@ struct ContainerView: View {
             DrawingView(viewModel: viewModel.drawingViewModel)
             LogView(viewModel: viewModel.logViewModel)
         }
-        
+        .padding()
     }
 }
 

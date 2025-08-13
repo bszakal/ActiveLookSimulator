@@ -13,10 +13,14 @@ struct LogView: View {
     @ObservedObject var viewModel: LogViewModel
     
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
             headerView
             commandLogs
+            Spacer()
         }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(15)
     }
     
     private var headerView: some View {
@@ -30,8 +34,6 @@ struct LogView: View {
             }
             .foregroundColor(.blue)
         }
-        .padding(.horizontal)
-        .padding(.top)
     }
     
     private var commandLogs: some View {
@@ -44,9 +46,9 @@ struct LogView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
         }
+        .frame(minHeight: 300)
         .background(Color.black)
         .cornerRadius(10)
-        .padding(.horizontal)
     }
     
     private func logEntry(_ log: CommandLog) -> some View {

@@ -14,7 +14,9 @@ struct DrawingView: View {
     var body: some View {
         VStack(spacing: 16) {
             headerView
+            Spacer()
             displayArea
+            Spacer()
             bottomView
         }
         .padding()
@@ -24,9 +26,16 @@ struct DrawingView: View {
     
     private var headerView: some View {
         HStack {
-            Text("ActiveLook Display")
-                .font(.headline)
-                .foregroundColor(.black)
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text("ActiveLook")
+                    .font(.title)
+                    .bold()
+                Text("Simulator")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+            }
+            .foregroundColor(.black)
+
             Spacer()
             
             HStack(spacing: 12) {
@@ -50,9 +59,8 @@ struct DrawingView: View {
                 Canvas { context, size in
                     viewModel.contextDrawer(&context, command: command)
                 }
+                .frame(width: 304, height: 256)
             }
-            .frame(width: 304, height: 256)
-            
             
             if viewModel.drawingCommands.isEmpty {
                 Text("Awaiting Commands")
@@ -61,7 +69,6 @@ struct DrawingView: View {
                     .padding(.top, 8)
             }
         }
-        .frame(width: 340, height: 290)
         .cornerRadius(10)
     }
     
